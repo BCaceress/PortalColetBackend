@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClienteDto {
     @ApiProperty({ description: 'Status de atividade do cliente', example: true })
@@ -180,4 +180,14 @@ export class CreateClienteDto {
     @IsDate()
     @IsNotEmpty()
     dt_data_contrato: Date;
+
+    @ApiProperty({
+        description: 'Array de emails do cliente',
+        type: [String],
+        example: ['contato@empresa.com', 'financeiro@empresa.com']
+    })
+    @IsArray()
+    @IsEmail({}, { each: true })
+    @IsOptional()
+    emails?: string[];
 }

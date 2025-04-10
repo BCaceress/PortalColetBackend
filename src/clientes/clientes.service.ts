@@ -8,8 +8,31 @@ export class ClientesService {
     constructor(private prisma: PrismaService) { }
 
     async create(createClienteDto: CreateClienteDto) {
-        return this.prisma.cliente.create({
-            data: createClienteDto,
+        // Extract emails from the DTO
+        const { emails, ...clienteData } = createClienteDto;
+
+        // Create the client with its emails in a transaction
+        return this.prisma.$transaction(async (prisma) => {
+            // Create the client
+            const cliente = await prisma.cliente.create({
+                data: clienteData,
+            });
+
+            // If emails exist, create email records for the client
+            if (emails && emails.length > 0) {
+                await prisma.emailCliente.createMany({
+                    data: emails.map(email => ({
+                        ds_email: email,
+                        id_cliente: cliente.id_cliente,
+                    })),
+                });
+            }
+
+            // Return the client with its emails
+            return prisma.cliente.findUnique({
+                where: { id_cliente: cliente.id_cliente },
+                include: { emails: true }
+            });
         });
     }
 
@@ -39,9 +62,46 @@ export class ClientesService {
 
     async update(id: number, updateClienteDto: UpdateClienteDto) {
         try {
-            return await this.prisma.cliente.update({
-                where: { id_cliente: id },
-                data: updateClienteDto,
+            // Extract emails from the DTO
+            const { emails, ...clienteData } = updateClienteDto;
+
+            return this.prisma.$transaction(async (prisma) => {
+                // Update client data
+                const updatedCliente = await prisma.cliente.update({
+                    where: { id_cliente: id },
+                    data: clienteData,
+                });
+
+                // If emails are provided, update them
+                if (emails) {
+                    // Delete existing emails
+                    await prisma.emailCliente.deleteMany({
+                        where: { id_cliente: id },
+                    });
+
+                    // Create new emails if array is not empty
+                    if (emails.length > 0) {
+                        await prisma.emailCliente.createMany({
+                            data: emails.map(email => ({
+                                ds_email: email,
+                                id_cliente: id,
+                            })),
+                        });
+                    }
+                }
+
+                // Return updated client with emails
+                return prisma.cliente.findUnique({
+                    where: { id_cliente: id },
+                    include: {
+                        emails: true,
+                        clientesContatos: {
+                            include: {
+                                contato: true,
+                            },
+                        },
+                    },
+                });
             });
         } catch (error) {
             throw new NotFoundException(`Cliente com ID ${id} não encontrado`);
