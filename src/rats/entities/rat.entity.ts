@@ -16,8 +16,8 @@ export class Rat {
     @ApiProperty({ description: 'Data e hora de saída' })
     dt_data_hora_saida: Date;
 
-    @ApiProperty({ description: 'Duração do atendimento' })
-    tm_duracao: Date;
+    @ApiProperty({ description: 'Duração do atendimento', example: '04:00:00' })
+    tm_duracao: string;
 
     @ApiProperty({ description: 'Comentários internos' })
     tx_comentario_interno: string;

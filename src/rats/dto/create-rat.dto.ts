@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { IsDate, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateRatDto {
@@ -27,6 +28,7 @@ export class CreateRatDto {
         example: '2025-01-01T08:00:00.000Z'
     })
     @IsDate()
+    @Type(() => Date)
     @IsNotEmpty()
     dt_data_hora_entrada: Date;
 
@@ -35,6 +37,7 @@ export class CreateRatDto {
         example: '2025-01-01T12:00:00.000Z'
     })
     @IsDate()
+    @Type(() => Date)
     @IsNotEmpty()
     dt_data_hora_saida: Date;
 
@@ -42,9 +45,9 @@ export class CreateRatDto {
         description: 'Duração do atendimento',
         example: '04:00:00'
     })
-    @IsDate()
+    @IsString()
     @IsNotEmpty()
-    tm_duracao: Date;
+    tm_duracao: string;
 
     @ApiProperty({
         description: 'Comentários internos',

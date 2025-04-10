@@ -31,7 +31,7 @@ model RAT {
   fl_deslocamento       String    // 'S' ou 'N'
   dt_data_hora_entrada  DateTime
   dt_data_hora_saida    DateTime
-  tm_duracao            DateTime  @db.Time()
+  tm_duracao            String    // Alterado de DateTime @db.Time() para String
   tx_comentario_interno String    // Textarea comment
   ds_originada          String
   ds_observacao         String
