@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClienteDto {
@@ -133,8 +134,9 @@ export class CreateClienteDto {
     nr_tecnica_presencial?: number;
 
     @ApiProperty({ description: 'Mínimo de horas', example: '04:00:00' })
+    @IsString()
     @IsNotEmpty()
-    tm_minimo_horas: Date;
+    tm_minimo_horas: string;
 
     @ApiProperty({ description: 'Indicador de diário de viagem', example: 'Sim' })
     @IsString()
@@ -179,6 +181,8 @@ export class CreateClienteDto {
     @ApiProperty({ description: 'Data do contrato', example: '2025-01-01T00:00:00.000Z' })
     @IsDate()
     @IsNotEmpty()
+    @Type(() => Date)
+    @Transform(({ value }) => new Date(value))
     dt_data_contrato: Date;
 
     @ApiProperty({

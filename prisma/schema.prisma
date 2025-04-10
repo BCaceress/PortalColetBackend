@@ -85,7 +85,7 @@ model Cliente {
   nr_simultaneos        Int
   nr_tecnica_remoto     Float?
   nr_tecnica_presencial Float?
-  tm_minimo_horas       DateTime  @db.Time()
+  tm_minimo_horas       String    // Alterado de DateTime @db.Time() para String
   ds_diario_viagem      String
   ds_regiao             String
   tx_observacao_contrato String

@@ -8,9 +8,28 @@ export class ContatosService {
     constructor(private prisma: PrismaService) { }
 
     async create(createContatoDto: CreateContatoDto) {
-        return this.prisma.contato.create({
-            data: createContatoDto,
+        const { id_clientes, ...contatoData } = createContatoDto;
+
+        // Criar o contato no banco de dados
+        const contato = await this.prisma.contato.create({
+            data: contatoData,
         });
+
+        // Se o array de id_clientes foi fornecido, vincular o contato aos clientes
+        if (id_clientes && id_clientes.length > 0) {
+            await this.prisma.clienteContato.createMany({
+                data: id_clientes.map(clienteId => ({
+                    id_cliente: clienteId,
+                    id_contato: contato.id_contato,
+                })),
+                skipDuplicates: true, // Evita duplicatas caso algum já exista
+            });
+
+            // Retornar o contato criado com os clientes vinculados
+            return this.findOne(contato.id_contato);
+        }
+
+        return contato;
     }
 
     async findAll() {
@@ -37,11 +56,40 @@ export class ContatosService {
     }
 
     async update(id: number, updateContatoDto: UpdateContatoDto) {
+        const { id_clientes, ...contatoData } = updateContatoDto as any;
+
         try {
-            return await this.prisma.contato.update({
+            // Atualiza os dados do contato
+            const contato = await this.prisma.contato.update({
                 where: { id_contato: id },
-                data: updateContatoDto,
+                data: contatoData,
             });
+
+            // Se um array de id_clientes foi fornecido, atualiza os relacionamentos
+            if (id_clientes && Array.isArray(id_clientes)) {
+                // Primeiro, remove todos os relacionamentos existentes
+                await this.prisma.clienteContato.deleteMany({
+                    where: {
+                        id_contato: id
+                    },
+                });
+
+                // Depois, cria os novos relacionamentos
+                if (id_clientes.length > 0) {
+                    await this.prisma.clienteContato.createMany({
+                        data: id_clientes.map(clienteId => ({
+                            id_cliente: clienteId,
+                            id_contato: id,
+                        })),
+                        skipDuplicates: true,
+                    });
+                }
+
+                // Retorna o contato atualizado com os clientes vinculados
+                return this.findOne(id);
+            }
+
+            return contato;
         } catch (error) {
             throw new NotFoundException(`Contato com ID ${id} não encontrado`);
         }

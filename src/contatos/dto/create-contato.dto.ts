@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateContatoDto {
     @ApiProperty({ description: 'Nome do contato', example: 'João Silva' })
@@ -36,4 +36,15 @@ export class CreateContatoDto {
     @IsBoolean()
     @IsNotEmpty()
     fl_whatsapp: boolean;
+
+    @ApiProperty({
+        description: 'Array de IDs de clientes aos quais o contato será vinculado',
+        example: [1, 2, 3],
+        required: false,
+        type: [Number]
+    })
+    @IsArray()
+    @IsNumber({}, { each: true })
+    @IsOptional()
+    id_clientes?: number[];
 }

@@ -11,6 +11,8 @@ export class ClientesService {
         // Extract emails from the DTO
         const { emails, ...clienteData } = createClienteDto;
 
+        // Não é mais necessário processar tm_minimo_horas, já que agora é uma string
+
         // Create the client with its emails in a transaction
         return this.prisma.$transaction(async (prisma) => {
             // Create the client
@@ -64,6 +66,8 @@ export class ClientesService {
         try {
             // Extract emails from the DTO
             const { emails, ...clienteData } = updateClienteDto;
+
+            // Não é mais necessário processar tm_minimo_horas, já que agora é uma string
 
             return this.prisma.$transaction(async (prisma) => {
                 // Update client data

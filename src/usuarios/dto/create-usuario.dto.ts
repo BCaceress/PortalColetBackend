@@ -6,7 +6,7 @@ export class CreateUsuarioDto {
     @IsNotEmpty({ message: 'Nome é obrigatório' })
     nome: string;
 
-    @ApiProperty({ description: 'Email do usuário', example: 'usuario@exemplo.com' })
+    @ApiProperty({ description: 'Email do usuário', example: 'admin@admin.com' })
     @IsEmail({}, { message: 'Formato de email inválido' })
     @IsNotEmpty({ message: 'Email é obrigatório' })
     email: string;
