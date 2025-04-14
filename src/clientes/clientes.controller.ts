@@ -28,6 +28,13 @@ export class ClientesController {
         return this.clientesService.findAll();
     }
 
+    @Get('lista/ativos')
+    @ApiOperation({ summary: 'Listar apenas os IDs e nomes dos clientes ativos' })
+    @ApiResponse({ status: 200, description: 'Lista de clientes ativos retornada com sucesso' })
+    findActiveList() {
+        return this.clientesService.findActiveList();
+    }
+
     @Get(':id')
     @ApiOperation({ summary: 'Obter um cliente pelo ID' })
     @ApiResponse({ status: 200, description: 'Cliente encontrado', type: Cliente })

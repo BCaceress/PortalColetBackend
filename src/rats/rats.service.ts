@@ -16,9 +16,24 @@ export class RatsService {
     async findAll() {
         return this.prisma.rAT.findMany({
             include: {
-                cliente: true,
-                contato: true,
-                usuario: true,
+                cliente: {
+                    select: {
+                        id_cliente: true,
+                        ds_nome: true
+                    }
+                },
+                contato: {
+                    select: {
+                        id_contato: true,
+                        ds_nome: true
+                    }
+                },
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        nome: true
+                    }
+                },
             },
         });
     }
@@ -27,9 +42,24 @@ export class RatsService {
         const rat = await this.prisma.rAT.findUnique({
             where: { id_rat: id },
             include: {
-                cliente: true,
-                contato: true,
-                usuario: true,
+                cliente: {
+                    select: {
+                        id_cliente: true,
+                        ds_nome: true
+                    }
+                },
+                contato: {
+                    select: {
+                        id_contato: true,
+                        ds_nome: true
+                    }
+                },
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        nome: true
+                    }
+                },
             },
         });
 
@@ -65,9 +95,24 @@ export class RatsService {
         return this.prisma.rAT.findMany({
             where: { id_usuario: usuarioId },
             include: {
-                cliente: true,
-                contato: true,
-                usuario: true,
+                cliente: {
+                    select: {
+                        id_cliente: true,
+                        ds_nome: true
+                    }
+                },
+                contato: {
+                    select: {
+                        id_contato: true,
+                        ds_nome: true
+                    }
+                },
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        nome: true
+                    }
+                },
             },
         });
     }
@@ -76,9 +121,24 @@ export class RatsService {
         return this.prisma.rAT.findMany({
             where: { id_cliente: clienteId },
             include: {
-                cliente: true,
-                contato: true,
-                usuario: true,
+                cliente: {
+                    select: {
+                        id_cliente: true,
+                        ds_nome: true
+                    }
+                },
+                contato: {
+                    select: {
+                        id_contato: true,
+                        ds_nome: true
+                    }
+                },
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        nome: true
+                    }
+                },
             },
         });
     }
@@ -87,9 +147,24 @@ export class RatsService {
         return this.prisma.rAT.findMany({
             where: { id_contato: contatoId },
             include: {
-                cliente: true,
-                contato: true,
-                usuario: true,
+                cliente: {
+                    select: {
+                        id_cliente: true,
+                        ds_nome: true
+                    }
+                },
+                contato: {
+                    select: {
+                        id_contato: true,
+                        ds_nome: true
+                    }
+                },
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        nome: true
+                    }
+                },
             },
         });
     }

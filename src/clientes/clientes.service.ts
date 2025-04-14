@@ -62,6 +62,21 @@ export class ClientesService {
         return cliente;
     }
 
+    async findActiveList() {
+        return this.prisma.cliente.findMany({
+            where: {
+                fl_ativo: true
+            },
+            select: {
+                id_cliente: true,
+                ds_nome: true
+            },
+            orderBy: {
+                ds_nome: 'asc'
+            }
+        });
+    }
+
     async update(id: number, updateClienteDto: UpdateClienteDto) {
         try {
             // Extract emails from the DTO

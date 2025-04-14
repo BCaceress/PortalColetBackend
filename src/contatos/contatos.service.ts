@@ -33,7 +33,29 @@ export class ContatosService {
     }
 
     async findAll() {
-        return this.prisma.contato.findMany();
+        const contatos = await this.prisma.contato.findMany({
+            include: {
+                clientesContatos: {
+                    include: {
+                        cliente: {
+                            select: {
+                                id_cliente: true,
+                                ds_nome: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Transform the response to include clients directly
+        return contatos.map(contato => {
+            const { clientesContatos, ...contatoData } = contato;
+            return {
+                ...contatoData,
+                clientes: clientesContatos.map(cc => cc.cliente)
+            };
+        });
     }
 
     async findOne(id: number) {
@@ -42,9 +64,14 @@ export class ContatosService {
             include: {
                 clientesContatos: {
                     include: {
-                        cliente: true,
-                    },
-                },
+                        cliente: {
+                            select: {
+                                id_cliente: true,
+                                ds_nome: true
+                            }
+                        }
+                    }
+                }
             },
         });
 
@@ -52,7 +79,12 @@ export class ContatosService {
             throw new NotFoundException(`Contato com ID ${id} não encontrado`);
         }
 
-        return contato;
+        // Transform response to include clients directly
+        const { clientesContatos, ...contatoData } = contato;
+        return {
+            ...contatoData,
+            clientes: clientesContatos.map(cc => cc.cliente)
+        };
     }
 
     async update(id: number, updateContatoDto: UpdateContatoDto) {
