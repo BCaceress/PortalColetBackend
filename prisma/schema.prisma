@@ -22,6 +22,16 @@ enum TipoFuncao {
   Suporte
 }
 
+enum StatusRAT {
+  Finalizado
+  Pendente
+}
+
+enum TipoDeslocamento {
+  P  // Presencial
+  R  // Remoto
+}
+
 model Usuario {
   id_usuario  Int        @id @default(autoincrement())
   nome        String
@@ -35,30 +45,30 @@ model Usuario {
 }
 
 model RAT {
-  id_rat                Int       @id @default(autoincrement())
-  ds_status             String
-  fl_deslocamento       String    // 'S' ou 'N'
+  id_rat                Int              @id @default(autoincrement())
+  ds_status             StatusRAT
+  fl_deslocamento       TipoDeslocamento // 'P' para Presencial ou 'R' para Remoto
   dt_data_hora_entrada  DateTime
   dt_data_hora_saida    DateTime
-  tm_duracao            String    // Alterado de DateTime @db.Time() para String
-  tx_comentario_interno String    // Textarea comment
+  tm_duracao            String           // Alterado de DateTime @db.Time() para String
+  tx_comentario_interno String?          // Textarea comment - opcional
   ds_originada          String
   ds_observacao         String
   nr_km_ida             Int?
   nr_km_volta           Int?
   nr_valor_pedagio      Float?
-  tx_atividades         String    // Textarea comment
-  tx_tarefas            String    // Textarea comment
-  tx_pendencias         String    // Textarea comment
+  tx_atividades         String           // Textarea comment
+  tx_tarefas            String?          // Textarea comment - opcional
+  tx_pendencias         String?          // Textarea comment - opcional
 
   id_usuario            Int
-  usuario               Usuario   @relation(fields: [id_usuario], references: [id_usuario])
+  usuario               Usuario          @relation(fields: [id_usuario], references: [id_usuario])
   
   id_cliente            Int
-  cliente               Cliente   @relation(fields: [id_cliente], references: [id_cliente])
+  cliente               Cliente          @relation(fields: [id_cliente], references: [id_cliente])
   
   id_contato            Int
-  contato               Contato   @relation(fields: [id_contato], references: [id_contato])
+  contato               Contato          @relation(fields: [id_contato], references: [id_contato])
 
   @@index([id_usuario])
   @@index([id_cliente])
@@ -123,8 +133,8 @@ model Contato {
   fl_ativo              Boolean
   tx_observacoes        String?
   ds_email              String
-  ds_telefone           String
-  fl_whatsapp           Boolean
+  ds_telefone           String?
+  fl_whatsapp           Boolean?
   
   clientesContatos      ClienteContato[]
   rats                  RAT[]

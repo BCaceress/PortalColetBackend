@@ -75,4 +75,12 @@ export class ContatosController {
     getClientContacts(@Param('clienteId') clienteId: string) {
         return this.contatosService.getClientContacts(+clienteId);
     }
+
+    @Get('/lista/ativos/:id_cliente')
+    @ApiOperation({ summary: 'Obter todos os contatos ativos de um cliente' })
+    @ApiResponse({ status: 200, description: 'Contatos ativos do cliente retornados com sucesso', type: [Contato] })
+    @ApiResponse({ status: 404, description: 'Cliente não encontrado' })
+    getActiveClientContacts(@Param('id_cliente') id_cliente: string) {
+        return this.contatosService.getActiveClientContacts(+id_cliente);
+    }
 }

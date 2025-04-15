@@ -1,27 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsIn, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+
+// Enums correspondentes aos definidos no schema.prisma
+enum StatusRAT {
+    Finalizado = 'Finalizado',
+    Pendente = 'Pendente'
+}
+
+enum TipoDeslocamento {
+    P = 'P', // Presencial
+    R = 'R'  // Remoto
+}
 
 export class CreateRatDto {
     @ApiProperty({
         description: 'Status do RAT',
-        example: 'Em Andamento',
-        enum: ['Aberta', 'Em Andamento', 'Finalizada', 'Cancelada']
+        example: 'Pendente',
+        enum: StatusRAT
     })
-    @IsString()
+    @IsEnum(StatusRAT)
     @IsNotEmpty()
-    @IsIn(['Aberta', 'Em Andamento', 'Finalizada', 'Cancelada'])
-    ds_status: string;
+    ds_status: StatusRAT;
 
     @ApiProperty({
-        description: 'Indicador de deslocamento',
-        example: 'S',
-        enum: ['S', 'N']
+        description: 'Tipo de deslocamento (P: Presencial, R: Remoto)',
+        example: 'P',
+        enum: TipoDeslocamento
     })
-    @IsString()
+    @IsEnum(TipoDeslocamento)
     @IsNotEmpty()
-    @IsIn(['S', 'N'])
-    fl_deslocamento: string;
+    fl_deslocamento: TipoDeslocamento;
 
     @ApiProperty({
         description: 'Data e hora de entrada',
@@ -51,11 +60,12 @@ export class CreateRatDto {
 
     @ApiProperty({
         description: 'Comentários internos',
-        example: 'Observações internas sobre o atendimento'
+        example: 'Observações internas sobre o atendimento',
+        required: false
     })
     @IsString()
-    @IsNotEmpty()
-    tx_comentario_interno: string;
+    @IsOptional()
+    tx_comentario_interno?: string;
 
     @ApiProperty({
         description: 'Forma de originação',
@@ -110,19 +120,21 @@ export class CreateRatDto {
 
     @ApiProperty({
         description: 'Tarefas pendentes',
-        example: 'Treinamento dos usuários'
+        example: 'Treinamento dos usuários',
+        required: false
     })
     @IsString()
-    @IsNotEmpty()
-    tx_tarefas: string;
+    @IsOptional()
+    tx_tarefas?: string;
 
     @ApiProperty({
         description: 'Pendências',
-        example: 'Aguardando autorização do cliente'
+        example: 'Aguardando autorização do cliente',
+        required: false
     })
     @IsString()
-    @IsNotEmpty()
-    tx_pendencias: string;
+    @IsOptional()
+    tx_pendencias?: string;
 
     @ApiProperty({
         description: 'ID do usuário responsável',

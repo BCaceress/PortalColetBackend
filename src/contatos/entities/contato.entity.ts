@@ -19,9 +19,9 @@ export class Contato {
     @ApiProperty({ description: 'Email do contato', example: 'contato@exemplo.com' })
     ds_email: string;
 
-    @ApiProperty({ description: 'Telefone do contato', example: '(11) 99999-9999' })
-    ds_telefone: string;
+    @ApiProperty({ description: 'Telefone do contato', example: '(11) 99999-9999', required: false })
+    ds_telefone?: string;
 
     @ApiProperty({ description: 'Indicador se o telefone é WhatsApp', example: true })
-    fl_whatsapp: boolean;
+    fl_whatsapp?: boolean;
 }

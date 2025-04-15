@@ -27,15 +27,15 @@ export class CreateContatoDto {
     @IsNotEmpty()
     ds_email: string;
 
-    @ApiProperty({ description: 'Telefone do contato', example: '(11) 99999-9999' })
+    @ApiProperty({ description: 'Telefone do contato', example: '(11) 99999-9999', required: false })
     @IsString()
-    @IsNotEmpty()
-    ds_telefone: string;
+    @IsOptional()
+    ds_telefone?: string;
 
     @ApiProperty({ description: 'Indicador se o telefone é WhatsApp', example: true })
     @IsBoolean()
     @IsNotEmpty()
-    fl_whatsapp: boolean;
+    fl_whatsapp?: boolean;
 
     @ApiProperty({
         description: 'Array de IDs de clientes aos quais o contato será vinculado',

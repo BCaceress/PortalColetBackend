@@ -8,8 +8,14 @@ export class RatsService {
     constructor(private prisma: PrismaService) { }
 
     async create(createRatDto: CreateRatDto) {
+        // Cria um novo objeto sem campos undefined
+        const data = Object.fromEntries(
+            Object.entries(createRatDto)
+                .filter(([_, value]) => value !== undefined)
+        );
+
         return this.prisma.rAT.create({
-            data: createRatDto,
+            data: data as any, // Usamos 'any' para evitar problemas de tipagem
         });
     }
 
@@ -72,9 +78,15 @@ export class RatsService {
 
     async update(id: number, updateRatDto: UpdateRatDto) {
         try {
+            // Cria um novo objeto sem campos undefined
+            const data = Object.fromEntries(
+                Object.entries(updateRatDto)
+                    .filter(([_, value]) => value !== undefined)
+            );
+
             return await this.prisma.rAT.update({
                 where: { id_rat: id },
-                data: updateRatDto,
+                data: data as any, // Usamos 'any' para evitar problemas de tipagem
             });
         } catch (error) {
             throw new NotFoundException(`RAT com ID ${id} não encontrado`);
