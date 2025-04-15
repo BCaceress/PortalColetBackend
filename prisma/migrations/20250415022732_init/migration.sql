@@ -1,10 +1,14 @@
+-- CreateEnum
+CREATE TYPE "TipoFuncao" AS ENUM ('Administrador', 'Analista', 'Desenvolvedor', 'Implantador', 'Suporte');
+
 -- CreateTable
 CREATE TABLE "usuarios" (
     "id_usuario" SERIAL NOT NULL,
     "nome" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "senha" TEXT NOT NULL,
-    "funcao" TEXT NOT NULL,
+    "funcao" "TipoFuncao" NOT NULL,
+    "fl_ativo" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "usuarios_pkey" PRIMARY KEY ("id_usuario")
 );
@@ -16,7 +20,7 @@ CREATE TABLE "rats" (
     "fl_deslocamento" TEXT NOT NULL,
     "dt_data_hora_entrada" TIMESTAMP(3) NOT NULL,
     "dt_data_hora_saida" TIMESTAMP(3) NOT NULL,
-    "tm_duracao" TIME NOT NULL,
+    "tm_duracao" TEXT NOT NULL,
     "tx_comentario_interno" TEXT NOT NULL,
     "ds_originada" TEXT NOT NULL,
     "ds_observacao" TEXT NOT NULL,
@@ -36,7 +40,6 @@ CREATE TABLE "rats" (
 -- CreateTable
 CREATE TABLE "clientes" (
     "id_cliente" SERIAL NOT NULL,
-    "fl_ativo" BOOLEAN NOT NULL,
     "ds_nome" TEXT NOT NULL,
     "ds_razao_social" TEXT NOT NULL,
     "nr_cnpj" TEXT NOT NULL,
@@ -58,20 +61,25 @@ CREATE TABLE "clientes" (
     "ds_situacao" TEXT NOT NULL,
     "ds_sistema" TEXT NOT NULL,
     "ds_contrato" TEXT NOT NULL,
-    "nr_nomeados" INTEGER NOT NULL,
-    "nr_simultaneos" INTEGER NOT NULL,
+    "nr_nomeados" INTEGER,
+    "nr_simultaneos" INTEGER,
     "nr_tecnica_remoto" DOUBLE PRECISION,
     "nr_tecnica_presencial" DOUBLE PRECISION,
-    "tm_minimo_horas" TIME NOT NULL,
+    "tm_minimo_horas" TEXT NOT NULL,
     "ds_diario_viagem" TEXT NOT NULL,
-    "ds_regiao" TEXT NOT NULL,
+    "ds_regiao" TEXT,
     "tx_observacao_contrato" TEXT NOT NULL,
-    "nr_codigo_zz" INTEGER NOT NULL,
-    "nr_franquia_nf" DOUBLE PRECISION NOT NULL,
+    "nr_codigo_zz" INTEGER,
+    "ds_franquia_nf" TEXT NOT NULL,
     "nr_qtde_documentos" INTEGER NOT NULL,
     "nr_valor_franqia" DOUBLE PRECISION NOT NULL,
     "nr_valor_excendente" DOUBLE PRECISION NOT NULL,
     "dt_data_contrato" DATE NOT NULL,
+    "fl_nfe" BOOLEAN NOT NULL DEFAULT false,
+    "fl_ndse" BOOLEAN NOT NULL DEFAULT false,
+    "fl_nfce" BOOLEAN NOT NULL DEFAULT false,
+    "nr_qtde_pdv" INTEGER,
+    "nr_valor_pdv" DOUBLE PRECISION,
 
     CONSTRAINT "clientes_pkey" PRIMARY KEY ("id_cliente")
 );

@@ -4,9 +4,6 @@ export class Cliente {
     @ApiProperty({ description: 'ID único do cliente' })
     id_cliente: number;
 
-    @ApiProperty({ description: 'Status de atividade do cliente', example: true })
-    fl_ativo: boolean;
-
     @ApiProperty({ description: 'Nome do cliente' })
     ds_nome: string;
 
@@ -61,7 +58,7 @@ export class Cliente {
     @ApiProperty({ description: 'Indicador se é matriz', example: true })
     fl_matriz: boolean;
 
-    @ApiProperty({ description: 'Situação do cliente', example: 'Ativo' })
+    @ApiProperty({ description: 'Situação do cliente (Implantação, Produção, Restrição ou Inativo)', example: 'Produção' })
     ds_situacao: string;
 
     @ApiProperty({ description: 'Sistema utilizado pelo cliente' })
@@ -70,11 +67,11 @@ export class Cliente {
     @ApiProperty({ description: 'Tipo de contrato' })
     ds_contrato: string;
 
-    @ApiProperty({ description: 'Número de nomeados', example: 5 })
-    nr_nomeados: number;
+    @ApiProperty({ description: 'Número de nomeados', example: 5, required: false })
+    nr_nomeados?: number;
 
-    @ApiProperty({ description: 'Número de simultâneos', example: 3 })
-    nr_simultaneos: number;
+    @ApiProperty({ description: 'Número de simultâneos', example: 3, required: false })
+    nr_simultaneos?: number;
 
     @ApiProperty({ description: 'Número de técnicas remotas', required: false })
     nr_tecnica_remoto?: number;
@@ -83,22 +80,22 @@ export class Cliente {
     nr_tecnica_presencial?: number;
 
     @ApiProperty({ description: 'Mínimo de horas' })
-    tm_minimo_horas: Date;
+    tm_minimo_horas: string;
 
     @ApiProperty({ description: 'Indicador de diário de viagem' })
     ds_diario_viagem: string;
 
-    @ApiProperty({ description: 'Região do cliente' })
-    ds_regiao: string;
+    @ApiProperty({ description: 'Região do cliente', required: false })
+    ds_regiao?: string;
 
     @ApiProperty({ description: 'Observação do contrato' })
     tx_observacao_contrato: string;
 
-    @ApiProperty({ description: 'Código ZZ' })
-    nr_codigo_zz: number;
+    @ApiProperty({ description: 'Código ZZ', required: false })
+    nr_codigo_zz?: number;
 
     @ApiProperty({ description: 'Franquia de NF' })
-    nr_franquia_nf: number;
+    ds_franquia_nf: string;
 
     @ApiProperty({ description: 'Quantidade de documentos' })
     nr_qtde_documentos: number;
@@ -111,4 +108,19 @@ export class Cliente {
 
     @ApiProperty({ description: 'Data do contrato' })
     dt_data_contrato: Date;
+
+    @ApiProperty({ description: 'Indicador de NFe', example: false })
+    fl_nfe: boolean;
+
+    @ApiProperty({ description: 'Indicador de NFS-e', example: false })
+    fl_nfse: boolean;
+
+    @ApiProperty({ description: 'Indicador de NFC-e', example: false })
+    fl_nfce: boolean;
+
+    @ApiProperty({ description: 'Quantidade de PDV', required: false })
+    nr_qtde_pdv?: number;
+
+    @ApiProperty({ description: 'Valor do PDV', required: false })
+    nr_valor_pdv?: number;
 }

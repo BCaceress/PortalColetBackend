@@ -37,7 +37,11 @@ export class UsuariosService {
     }
 
     async findAll() {
-        const usuarios = await this.prisma.usuario.findMany();
+        const usuarios = await this.prisma.usuario.findMany({
+            orderBy: {
+                nome: 'asc',
+            },
+        });
 
         // Remove passwords from the response
         return usuarios.map(({ senha, ...usuario }) => usuario);

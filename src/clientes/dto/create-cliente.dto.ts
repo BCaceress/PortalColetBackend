@@ -3,11 +3,6 @@ import { Transform, Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClienteDto {
-    @ApiProperty({ description: 'Status de atividade do cliente', example: true })
-    @IsBoolean()
-    @IsNotEmpty()
-    fl_ativo: boolean;
-
     @ApiProperty({ description: 'Nome do cliente', example: 'Empresa ABC' })
     @IsString()
     @IsNotEmpty()
@@ -98,7 +93,7 @@ export class CreateClienteDto {
     @IsNotEmpty()
     fl_matriz: boolean;
 
-    @ApiProperty({ description: 'Situação do cliente', example: 'Ativo' })
+    @ApiProperty({ description: 'Situação do cliente (Implantação, Produção, Restrição ou Inativo)', example: 'Produção' })
     @IsString()
     @IsNotEmpty()
     ds_situacao: string;
@@ -113,24 +108,28 @@ export class CreateClienteDto {
     @IsNotEmpty()
     ds_contrato: string;
 
-    @ApiProperty({ description: 'Número de nomeados', example: 5 })
+    @ApiProperty({ description: 'Número de nomeados', example: 5, required: false })
     @IsNumber()
-    @IsNotEmpty()
-    nr_nomeados: number;
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_nomeados?: number;
 
-    @ApiProperty({ description: 'Número de simultâneos', example: 3 })
+    @ApiProperty({ description: 'Número de simultâneos', example: 3, required: false })
     @IsNumber()
-    @IsNotEmpty()
-    nr_simultaneos: number;
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_simultaneos?: number;
 
     @ApiProperty({ description: 'Número de técnicas remotas', required: false, example: 2 })
     @IsNumber()
     @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
     nr_tecnica_remoto?: number;
 
     @ApiProperty({ description: 'Número de técnicas presenciais', required: false, example: 1 })
     @IsNumber()
     @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
     nr_tecnica_presencial?: number;
 
     @ApiProperty({ description: 'Mínimo de horas', example: '04:00:00' })
@@ -143,40 +142,45 @@ export class CreateClienteDto {
     @IsNotEmpty()
     ds_diario_viagem: string;
 
-    @ApiProperty({ description: 'Região do cliente', example: 'Sudeste' })
+    @ApiProperty({ description: 'Região do cliente', example: 'Sudeste', required: false })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined ? undefined : String(value))
+    ds_regiao?: string;
+
+    @ApiProperty({ description: 'Observação do contrato', required: false })
+    @IsString()
+    @IsOptional()
+    tx_observacao_contrato?: string;
+
+    @ApiProperty({ description: 'Código ZZ', example: 12345, required: false })
+    @IsNumber()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_codigo_zz?: number;
+
+    @ApiProperty({ description: 'Franquia de NF', example: '10' })
     @IsString()
     @IsNotEmpty()
-    ds_regiao: string;
+    ds_franquia_nf: string;
 
-    @ApiProperty({ description: 'Observação do contrato' })
-    @IsString()
-    @IsNotEmpty()
-    tx_observacao_contrato: string;
-
-    @ApiProperty({ description: 'Código ZZ', example: 12345 })
+    @ApiProperty({ description: 'Quantidade de documentos', example: 100, required: false })
     @IsNumber()
-    @IsNotEmpty()
-    nr_codigo_zz: number;
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_qtde_documentos?: number;
 
-    @ApiProperty({ description: 'Franquia de NF', example: 10 })
+    @ApiProperty({ description: 'Valor da franquia', example: 1000.0, required: false })
     @IsNumber()
-    @IsNotEmpty()
-    nr_franquia_nf: number;
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_valor_franqia?: number;
 
-    @ApiProperty({ description: 'Quantidade de documentos', example: 100 })
+    @ApiProperty({ description: 'Valor excedente', example: 100.0, required: false })
     @IsNumber()
-    @IsNotEmpty()
-    nr_qtde_documentos: number;
-
-    @ApiProperty({ description: 'Valor da franquia', example: 1000.0 })
-    @IsNumber()
-    @IsNotEmpty()
-    nr_valor_franqia: number;
-
-    @ApiProperty({ description: 'Valor excedente', example: 100.0 })
-    @IsNumber()
-    @IsNotEmpty()
-    nr_valor_excendente: number;
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_valor_excendente?: number;
 
     @ApiProperty({ description: 'Data do contrato', example: '2025-01-01T00:00:00.000Z' })
     @IsDate()
@@ -184,6 +188,36 @@ export class CreateClienteDto {
     @Type(() => Date)
     @Transform(({ value }) => new Date(value))
     dt_data_contrato: Date;
+
+    @ApiProperty({ description: 'Indicador de NFe', example: false, default: false })
+    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined ? false : Boolean(value))
+    fl_nfe?: boolean;
+
+    @ApiProperty({ description: 'Indicador de NFS-e', example: false, default: false })
+    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined ? false : Boolean(value))
+    fl_nfse?: boolean;
+
+    @ApiProperty({ description: 'Indicador de NFC-e', example: false, default: false })
+    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined ? false : Boolean(value))
+    fl_nfce?: boolean;
+
+    @ApiProperty({ description: 'Quantidade de PDV', example: 3, required: false })
+    @IsNumber()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_qtde_pdv?: number;
+
+    @ApiProperty({ description: 'Valor do PDV', example: 500.0, required: false })
+    @IsNumber()
+    @IsOptional()
+    @Transform(({ value }) => value === null || value === undefined || value === '' ? undefined : Number(value))
+    nr_valor_pdv?: number;
 
     @ApiProperty({
         description: 'Array de emails do cliente',

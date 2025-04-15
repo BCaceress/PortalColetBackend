@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsIn, IsNotEmpty, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+
+// Define the enum locally to match the schema
+enum TipoFuncao {
+    Administrador = 'Administrador',
+    Analista = 'Analista',
+    Desenvolvedor = 'Desenvolvedor',
+    Implantador = 'Implantador',
+    Suporte = 'Suporte'
+}
 
 export class CreateUsuarioDto {
     @ApiProperty({ description: 'Nome do usuário' })
@@ -16,8 +25,13 @@ export class CreateUsuarioDto {
     @MinLength(6, { message: 'A senha deve ter pelo menos 6 caracteres' })
     senha: string;
 
-    @ApiProperty({ description: 'Função do usuário no sistema', example: 'admin', enum: ['admin', 'tecnico', 'gerente'] })
+    @ApiProperty({ description: 'Função do usuário no sistema', example: 'Administrador', enum: TipoFuncao })
     @IsNotEmpty({ message: 'Função é obrigatória' })
-    @IsIn(['admin', 'tecnico', 'gerente'], { message: 'Função deve ser: admin, tecnico ou gerente' })
-    funcao: string;
+    @IsEnum(TipoFuncao, { message: 'Função deve ser uma das seguintes: Administrador, Analista, Desenvolvedor, Implantador, Suporte' })
+    funcao: TipoFuncao;
+
+    @ApiProperty({ description: 'Status do usuário (true = Ativo, false = Inativo)', default: true })
+    @IsBoolean({ message: 'Status deve ser um valor booleano' })
+    @IsOptional()
+    fl_ativo?: boolean;
 }

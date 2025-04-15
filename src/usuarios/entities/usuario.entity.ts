@@ -15,4 +15,7 @@ export class Usuario {
 
     @ApiProperty({ description: 'Função do usuário no sistema' })
     funcao: string;
+
+    @ApiProperty({ description: 'Status do usuário (true = Ativo, false = Inativo)' })
+    fl_ativo: boolean;
 }
