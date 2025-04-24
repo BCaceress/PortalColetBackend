@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 // Enums correspondentes aos definidos no schema.prisma
 enum StatusRAT {
@@ -14,6 +14,14 @@ enum TipoDeslocamento {
 }
 
 export class CreateRatDto {
+    @ApiProperty({
+        description: 'ID do RAT (opcional para migração)',
+        required: false
+    })
+    @IsOptional()
+    @IsInt({ message: 'ID deve ser um número inteiro' })
+    id_rat?: number;
+
     @ApiProperty({
         description: 'Status do RAT',
         example: 'Pendente',

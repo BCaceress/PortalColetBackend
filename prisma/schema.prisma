@@ -33,7 +33,7 @@ enum TipoDeslocamento {
 }
 
 model Usuario {
-  id_usuario  Int        @id @default(autoincrement())
+  id_usuario  Int        @id
   nome        String
   email       String     @unique
   senha       String
@@ -45,7 +45,7 @@ model Usuario {
 }
 
 model RAT {
-  id_rat                Int              @id @default(autoincrement())
+  id_rat                Int              @id
   ds_status             StatusRAT
   fl_deslocamento       TipoDeslocamento // 'P' para Presencial ou 'R' para Remoto
   dt_data_hora_entrada  DateTime
@@ -77,7 +77,7 @@ model RAT {
 }
 
 model Cliente {
-  id_cliente            Int       @id @default(autoincrement())
+  id_cliente            Int       @id
   ds_nome               String
   ds_razao_social       String
   nr_cnpj               String
@@ -127,7 +127,7 @@ model Cliente {
 }
 
 model Contato {
-  id_contato            Int       @id @default(autoincrement())
+  id_contato            Int       @id
   ds_nome               String
   ds_cargo              String
   fl_ativo              Boolean

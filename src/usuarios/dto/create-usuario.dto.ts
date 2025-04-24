@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsEnum, IsInt, IsNotEmpty, IsOptional, MinLength } from 'class-validator';
 
 // Define the enum locally to match the schema
 enum TipoFuncao {
@@ -11,6 +11,11 @@ enum TipoFuncao {
 }
 
 export class CreateUsuarioDto {
+    @ApiProperty({ description: 'ID do usuário (opcional para migração)', required: false })
+    @IsOptional()
+    @IsInt({ message: 'ID deve ser um número inteiro' })
+    id_usuario?: number;
+
     @ApiProperty({ description: 'Nome do usuário' })
     @IsNotEmpty({ message: 'Nome é obrigatório' })
     nome: string;

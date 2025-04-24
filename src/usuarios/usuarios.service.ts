@@ -9,7 +9,7 @@ export class UsuariosService {
     constructor(private prisma: PrismaService) { }
 
     async create(createUsuarioDto: CreateUsuarioDto) {
-        const { email, senha } = createUsuarioDto;
+        const { email, senha, id_usuario } = createUsuarioDto;
 
         // Check if user with this email already exists
         const existingUser = await this.prisma.usuario.findUnique({
@@ -20,13 +20,34 @@ export class UsuariosService {
             throw new ConflictException('Email já está em uso');
         }
 
+        // Check if ID is provided and if it's already in use
+        if (id_usuario !== undefined) {
+            const userWithId = await this.prisma.usuario.findUnique({
+                where: { id_usuario },
+            });
+
+            if (userWithId) {
+                throw new ConflictException(`Usuário com ID ${id_usuario} já existe`);
+            }
+        }
+
+        // Get the next ID if not provided
+        let nextId = id_usuario;
+        if (nextId === undefined) {
+            const lastUser = await this.prisma.usuario.findFirst({
+                orderBy: { id_usuario: 'desc' },
+            });
+            nextId = lastUser ? lastUser.id_usuario + 1 : 1;
+        }
+
         // Hash the password
         const hashedPassword = await bcrypt.hash(senha, 10);
 
-        // Create the new user with hashed password
+        // Create the new user with hashed password and the determined ID
         const newUser = await this.prisma.usuario.create({
             data: {
                 ...createUsuarioDto,
+                id_usuario: nextId,
                 senha: hashedPassword,
             },
         });

@@ -1,8 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsDate, IsEmail, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClienteDto {
+    @ApiProperty({ description: 'ID do cliente (opcional para migração)', required: false })
+    @IsOptional()
+    @IsInt({ message: 'ID deve ser um número inteiro' })
+    id_cliente?: number;
+
     @ApiProperty({ description: 'Nome do cliente', example: 'Empresa ABC' })
     @IsString()
     @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRatDto } from './dto/create-rat.dto';
 import { UpdateRatDto } from './dto/update-rat.dto';
@@ -8,14 +8,39 @@ export class RatsService {
     constructor(private prisma: PrismaService) { }
 
     async create(createRatDto: CreateRatDto) {
+        const { id_rat, ...ratData } = createRatDto;
+
+        // Check if ID is provided and if it's already in use
+        if (id_rat !== undefined) {
+            const ratWithId = await this.prisma.rAT.findUnique({
+                where: { id_rat },
+            });
+
+            if (ratWithId) {
+                throw new ConflictException(`RAT com ID ${id_rat} já existe`);
+            }
+        }
+
+        // Get the next ID if not provided
+        let nextId = id_rat;
+        if (nextId === undefined) {
+            const lastRat = await this.prisma.rAT.findFirst({
+                orderBy: { id_rat: 'desc' },
+            });
+            nextId = lastRat ? lastRat.id_rat + 1 : 1;
+        }
+
         // Cria um novo objeto sem campos undefined
         const data = Object.fromEntries(
-            Object.entries(createRatDto)
+            Object.entries(ratData)
                 .filter(([_, value]) => value !== undefined)
         );
 
         return this.prisma.rAT.create({
-            data: data as any, // Usamos 'any' para evitar problemas de tipagem
+            data: {
+                ...data as any, // Usamos 'any' para evitar problemas de tipagem
+                id_rat: nextId
+            },
         });
     }
 

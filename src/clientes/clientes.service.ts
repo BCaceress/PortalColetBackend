@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
@@ -8,12 +8,33 @@ export class ClientesService {
     constructor(private prisma: PrismaService) { }
 
     async create(createClienteDto: CreateClienteDto) {
-        // Extract emails from the DTO
-        const { emails, fl_ativo, ...clienteDataRaw } = createClienteDto as any; // Use any to allow fl_ativo extraction
+        // Extract emails and ID from the DTO
+        const { emails, fl_ativo, id_cliente, ...clienteDataRaw } = createClienteDto as any;
+
+        // Check if ID is provided and if it's already in use
+        if (id_cliente !== undefined) {
+            const clienteWithId = await this.prisma.cliente.findUnique({
+                where: { id_cliente },
+            });
+
+            if (clienteWithId) {
+                throw new ConflictException(`Cliente com ID ${id_cliente} já existe`);
+            }
+        }
+
+        // Get the next ID if not provided
+        let nextId = id_cliente;
+        if (nextId === undefined) {
+            const lastCliente = await this.prisma.cliente.findFirst({
+                orderBy: { id_cliente: 'desc' },
+            });
+            nextId = lastCliente ? lastCliente.id_cliente + 1 : 1;
+        }
 
         // Handle optional fields by providing default values for fields that are required by Prisma
         const clienteData = {
             ...clienteDataRaw,
+            id_cliente: nextId,
             // Handle optional numeric fields
             nr_nomeados: clienteDataRaw.nr_nomeados ?? 0,
             nr_simultaneos: clienteDataRaw.nr_simultaneos ?? 0,
@@ -236,6 +257,106 @@ export class ClientesService {
             });
         } catch (error) {
             throw new NotFoundException(`Cliente com ID ${id} não encontrado`);
+        }
+    }
+
+    async getEmails(id_cliente: number) {
+        const cliente = await this.prisma.cliente.findUnique({
+            where: { id_cliente },
+            select: { emails: true }
+        });
+
+        if (!cliente) {
+            throw new NotFoundException(`Cliente com ID ${id_cliente} não encontrado`);
+        }
+
+        return cliente.emails;
+    }
+
+    async getEmailById(id: number) {
+        const email = await this.prisma.emailCliente.findUnique({
+            where: { id }
+        });
+
+        if (!email) {
+            throw new NotFoundException(`Email com ID ${id} não encontrado`);
+        }
+
+        return email;
+    }
+
+    async createEmail(createEmailClienteDto: any) {
+        const { id_cliente, ds_email } = createEmailClienteDto;
+
+        // Verificar se o cliente existe
+        const clienteExists = await this.prisma.cliente.findUnique({
+            where: { id_cliente }
+        });
+
+        if (!clienteExists) {
+            throw new NotFoundException(`Cliente com ID ${id_cliente} não encontrado`);
+        }
+
+        // Verificar se o email já existe para este cliente
+        const emailExists = await this.prisma.emailCliente.findFirst({
+            where: {
+                id_cliente,
+                ds_email
+            }
+        });
+
+        if (emailExists) {
+            throw new ConflictException(`Email ${ds_email} já existe para este cliente`);
+        }
+
+        // Criar o novo email
+        return this.prisma.emailCliente.create({
+            data: {
+                ds_email,
+                id_cliente
+            }
+        });
+    }
+
+    async updateEmail(id: number, updateEmailClienteDto: any) {
+        const { ds_email } = updateEmailClienteDto;
+
+        // Verificar se o email existe
+        const emailExists = await this.prisma.emailCliente.findUnique({
+            where: { id }
+        });
+
+        if (!emailExists) {
+            throw new NotFoundException(`Email com ID ${id} não encontrado`);
+        }
+
+        // Atualizar o email
+        return this.prisma.emailCliente.update({
+            where: { id },
+            data: { ds_email }
+        });
+    }
+
+    async removeEmail(id: number) {
+        try {
+            // Verificar se o email existe
+            const emailExists = await this.prisma.emailCliente.findUnique({
+                where: { id }
+            });
+
+            if (!emailExists) {
+                throw new NotFoundException(`Email com ID ${id} não encontrado`);
+            }
+
+            // Remover o email
+            return this.prisma.emailCliente.delete({
+                where: { id }
+            });
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new NotFoundException(`Email com ID ${id} não encontrado`);
         }
     }
 }

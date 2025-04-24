@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateContatoDto } from './dto/create-contato.dto';
@@ -9,11 +9,34 @@ export class ContatosService {
     constructor(private prisma: PrismaService) { }
 
     async create(createContatoDto: CreateContatoDto) {
-        const { id_clientes, ...contatoData } = createContatoDto;
+        const { id_clientes, id_contato, ...contatoData } = createContatoDto;
 
-        // Create the contact in the database with proper typing
+        // Check if ID is provided and if it's already in use
+        if (id_contato !== undefined) {
+            const contatoWithId = await this.prisma.contato.findUnique({
+                where: { id_contato },
+            });
+
+            if (contatoWithId) {
+                throw new ConflictException(`Contato com ID ${id_contato} já existe`);
+            }
+        }
+
+        // Get the next ID if not provided
+        let nextId = id_contato;
+        if (nextId === undefined) {
+            const lastContato = await this.prisma.contato.findFirst({
+                orderBy: { id_contato: 'desc' },
+            });
+            nextId = lastContato ? lastContato.id_contato + 1 : 1;
+        }
+
+        // Create the contact in the database with proper typing and the determined ID
         const contato = await this.prisma.contato.create({
-            data: contatoData as Prisma.ContatoCreateInput,
+            data: {
+                ...contatoData as Prisma.ContatoCreateInput,
+                id_contato: nextId
+            },
         });
 
         // Se o array de id_clientes foi fornecido, vincular o contato aos clientes
@@ -46,6 +69,9 @@ export class ContatosService {
                         }
                     }
                 }
+            },
+            orderBy: {
+                ds_nome: 'asc'
             }
         });
 

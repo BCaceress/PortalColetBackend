@@ -1,7 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateContatoDto {
+    @ApiProperty({ description: 'ID do contato (opcional para migração)', required: false })
+    @IsOptional()
+    @IsInt({ message: 'ID deve ser um número inteiro' })
+    id_contato?: number;
+
     @ApiProperty({ description: 'Nome do contato', example: 'João Silva' })
     @IsString()
     @IsNotEmpty()
