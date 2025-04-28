@@ -37,6 +37,9 @@ export class Rat {
     @ApiProperty({ description: 'Valor do pedágio', required: false })
     nr_valor_pedagio?: number;
 
+    @ApiProperty({ description: 'Valor do quilômetro rodado', required: false })
+    nr_valor_km_rodado?: number;
+
     @ApiProperty({ description: 'Atividades realizadas' })
     tx_atividades: string;
 

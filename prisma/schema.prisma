@@ -55,14 +55,15 @@ enum PermissaoBaseConhecimento {
 }
 
 model Usuario {
-  id_usuario  Int        @id
-  nome        String
-  email       String     @unique
-  senha       String
-  funcao      TipoFuncao
-  fl_ativo    Boolean    @default(true)
-  rats        RAT[]
-  basesConhecimento BaseConhecimento[]
+  id_usuario          Int        @id
+  nome                String
+  email               String     @unique
+  senha               String
+  funcao              TipoFuncao
+  fl_ativo            Boolean    @default(true)
+  nr_valor_km_rodado  Float?     // New column for km value
+  rats                RAT[]
+  basesConhecimento   BaseConhecimento[]
 
   @@map("usuarios")
 }
@@ -80,6 +81,7 @@ model RAT {
   nr_km_ida             Int?
   nr_km_volta           Int?
   nr_valor_pedagio      Float?
+  nr_valor_km_rodado    Float?           // New column for km value
   tx_atividades         String           // Textarea comment
   tx_tarefas            String?          // Textarea comment - opcional
   tx_pendencias         String?          // Textarea comment - opcional

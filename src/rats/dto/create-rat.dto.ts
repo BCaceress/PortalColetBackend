@@ -119,6 +119,15 @@ export class CreateRatDto {
     nr_valor_pedagio?: number;
 
     @ApiProperty({
+        description: 'Valor do quilômetro rodado',
+        required: false,
+        example: 1.50
+    })
+    @IsNumber()
+    @IsOptional()
+    nr_valor_km_rodado?: number;
+
+    @ApiProperty({
         description: 'Atividades realizadas',
         example: 'Instalação e configuração do sistema'
     })

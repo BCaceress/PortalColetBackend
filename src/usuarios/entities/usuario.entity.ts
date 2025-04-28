@@ -18,4 +18,7 @@ export class Usuario {
 
     @ApiProperty({ description: 'Status do usuário (true = Ativo, false = Inativo)' })
     fl_ativo: boolean;
+
+    @ApiProperty({ description: 'Valor do quilômetro rodado', required: false })
+    nr_valor_km_rodado?: number;
 }
