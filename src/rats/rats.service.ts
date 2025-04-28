@@ -46,6 +46,9 @@ export class RatsService {
 
     async findAll() {
         return this.prisma.rAT.findMany({
+            orderBy: {
+                id_rat: 'desc'  // Order by id_rat in descending order
+            },
             include: {
                 cliente: {
                     select: {

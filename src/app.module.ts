@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { BaseConhecimentoModule } from './base-conhecimento/base-conhecimento.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { ContatosModule } from './contatos/contatos.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,6 +17,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     ClientesModule,
     ContatosModule,
     RatsModule,
+    BaseConhecimentoModule,
   ],
 })
 export class AppModule { }
