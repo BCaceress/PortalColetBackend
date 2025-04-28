@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateRatDto } from './dto/create-rat.dto';
+import { RelatorioDeslocamentoDto } from './dto/relatorio-deslocamento.dto';
 import { UpdateRatDto } from './dto/update-rat.dto';
 import { Rat } from './entities/rat.entity';
 import { RatsService } from './rats.service';
@@ -71,5 +72,13 @@ export class RatsController {
     @ApiResponse({ status: 200, description: 'RATs do contato retornados com sucesso', type: [Rat] })
     findByContato(@Param('id') id: string) {
         return this.ratsService.findByContato(+id);
+    }
+
+    @Post('/relatorio-deslocamento')
+    @ApiOperation({ summary: 'Obter relatório de deslocamento' })
+    @ApiResponse({ status: 200, description: 'Relatório de deslocamento gerado com sucesso' })
+    @ApiResponse({ status: 400, description: 'Requisição inválida' })
+    findRelatorioDeslocamento(@Body() relatorioDeslocamentoDto: RelatorioDeslocamentoDto) {
+        return this.ratsService.findDeslocamentos(relatorioDeslocamentoDto);
     }
 }

@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
@@ -23,8 +23,9 @@ export class UsuariosController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Listar todos os usuários' })
     @ApiResponse({ status: 200, description: 'Lista de usuários retornada com sucesso' })
-    findAll() {
-        return this.usuariosService.findAll();
+    @ApiQuery({ name: 'funcao', required: false, description: 'Filtrar usuários por função' })
+    findAll(@Query('funcao') funcao?: string) {
+        return this.usuariosService.findAll(funcao);
     }
 
     @Get(':id')

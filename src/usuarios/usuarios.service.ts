@@ -57,8 +57,15 @@ export class UsuariosService {
         return result;
     }
 
-    async findAll() {
+    async findAll(funcao?: string) {
+        // Build the query with role filter if provided and always filter for active users
+        const where = {
+            fl_ativo: true,
+            ...(funcao ? { funcao: funcao } : {}),
+        };
+
         const usuarios = await this.prisma.usuario.findMany({
+            where,
             orderBy: {
                 nome: 'asc',
             },

@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRatDto } from './dto/create-rat.dto';
+import { RelatorioDeslocamentoDto } from './dto/relatorio-deslocamento.dto';
 import { UpdateRatDto } from './dto/update-rat.dto';
 
 @Injectable()
@@ -206,6 +207,51 @@ export class RatsService {
                     }
                 },
             },
+        });
+    }
+
+    async findDeslocamentos(params: RelatorioDeslocamentoDto) {
+        const { id_usuario, dt_data_hora_entrada, dt_data_hora_saida } = params;
+
+        const rats = await this.prisma.rAT.findMany({
+            where: {
+                id_usuario: id_usuario,
+                dt_data_hora_entrada: {
+                    gte: new Date(dt_data_hora_entrada)
+                },
+                dt_data_hora_saida: {
+                    lte: new Date(dt_data_hora_saida)
+                },
+                ds_status: 'Finalizado',
+                fl_deslocamento: 'P', // Presencial
+            },
+            include: {
+                usuario: true,
+                cliente: true
+            },
+            orderBy: {
+                dt_data_hora_entrada: 'asc'
+            }
+        });
+
+        // Formata o resultado para incluir apenas os campos necessários
+        return rats.map(rat => {
+            // Acessamos o campo nr_valor_km_rodado de forma segura usando notação opcional
+            // e fazendo cast para any quando necessário para lidar com tipagem estrita
+            const valorKmRodado = (rat.usuario as any)?.nr_valor_km_rodado;
+
+            return {
+                id_rat: rat.id_rat,
+                dt_data_hora_entrada: rat.dt_data_hora_entrada,
+                dt_data_hora_saida: rat.dt_data_hora_saida,
+                nr_km_ida: rat.nr_km_ida,
+                nr_km_volta: rat.nr_km_volta,
+                nr_valor_pedagio: rat.nr_valor_pedagio,
+                nr_valor_km_rodado: valorKmRodado,
+                tm_duracao: rat.tm_duracao,
+                nome_usuario: rat.usuario.nome,
+                nome_cliente: rat.cliente.ds_nome
+            };
         });
     }
 }
