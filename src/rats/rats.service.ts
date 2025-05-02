@@ -236,10 +236,6 @@ export class RatsService {
 
         // Formata o resultado para incluir apenas os campos necessários
         return rats.map(rat => {
-            // Acessamos o campo nr_valor_km_rodado de forma segura usando notação opcional
-            // e fazendo cast para any quando necessário para lidar com tipagem estrita
-            const valorKmRodado = (rat.usuario as any)?.nr_valor_km_rodado;
-
             return {
                 id_rat: rat.id_rat,
                 dt_data_hora_entrada: rat.dt_data_hora_entrada,
@@ -247,7 +243,7 @@ export class RatsService {
                 nr_km_ida: rat.nr_km_ida,
                 nr_km_volta: rat.nr_km_volta,
                 nr_valor_pedagio: rat.nr_valor_pedagio,
-                nr_valor_km_rodado: valorKmRodado,
+                nr_valor_km_rodado: (rat as any).nr_valor_km_rodado,
                 tm_duracao: rat.tm_duracao,
                 nome_usuario: rat.usuario.nome,
                 nome_cliente: rat.cliente.ds_nome
